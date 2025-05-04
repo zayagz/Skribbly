@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skribbly</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Kite+One&display=swap" rel="stylesheet" />
+</head>
+<body class="note-screen">
+
+  <div class="note-box">
+    <input type="text" id="note-title" placeholder="Title" />
+    <textarea id="note-body" placeholder="Write your note..."></textarea>
+    <button id="save-note">Save</button>
+  </div>
+
+  <script>
+    const saveBtn = document.getElementById("save-note");
+    const titleInput = document.getElementById("note-title");
+    const bodyInput = document.getElementById("note-body");
+  
+    const editIndex = localStorage.getItem("edit-index");
+    const activeProject = localStorage.getItem("active-project") || "Default";
+    const notes = JSON.parse(localStorage.getItem("scribbly-notes") || "[]");
+  
+    if (editIndex !== null && notes[editIndex]) {
+      titleInput.value = notes[editIndex].title;
+      bodyInput.value = notes[editIndex].body;
+    }
+  
+    saveBtn.addEventListener("click", () => {
+      const title = titleInput.value.trim();
+      const body = bodyInput.value.trim();
+      if (!title) return;
+  
+      if (editIndex !== null && notes[editIndex]) {
+        notes[editIndex] = { title, body, project: activeProject };
+        localStorage.removeItem("edit-index");
+      } else {
+        notes.push({ title, body, project: activeProject });
+      }
+  
+      localStorage.setItem("scribbly-notes", JSON.stringify(notes));
+      window.location.href = "dashboard.html";
+    });
+  </script>
+
+</body>
+</html>
